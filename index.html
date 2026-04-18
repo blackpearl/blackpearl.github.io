@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rajthilak Chandran — Solutions Architect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:       #0d0f14;
+      --paper:     #f5f2ec;
+      --accent:    #1a3a5c;
+      --gold:      #b8975a;
+      --muted:     #7a7570;
+      --rule:      #ddd8cf;
+      --tag-bg:    #e8e3d8;
+      --card-bg:   #faf8f4;
+      --green:     #2e6b4f;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(245,242,236,0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      gap: 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-left { position: relative; }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 2rem; height: 1px;
+      background: var(--gold);
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.0;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.01em;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-tagline {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+
+    .btn {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.85rem 2rem;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--paper);
+      border: 1px solid var(--accent);
+    }
+    .btn-primary:hover { background: var(--ink); border-color: var(--ink); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .btn-secondary:hover { background: var(--accent); color: var(--paper); }
+
+    .hero-badges {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.8rem;
+      background: var(--tag-bg);
+      color: var(--muted);
+      border-radius: 2px;
+    }
+    .badge.highlight { background: var(--accent); color: var(--paper); }
+
+    /* HERO RIGHT – stats panel */
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.8rem 2rem;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateX(30px);
+      animation: slideIn 0.6s forwards;
+    }
+    .stat-card:nth-child(1) { animation-delay: 0.2s; }
+    .stat-card:nth-child(2) { animation-delay: 0.35s; }
+    .stat-card:nth-child(3) { animation-delay: 0.5s; }
+
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--gold);
+    }
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .stat-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+    .stat-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ── SECTION SHELL ── */
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 3rem;
+    }
+
+    .section-rule {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-bottom: 3rem;
+    }
+    .section-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+    .section-rule-line {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+    .section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--rule);
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .about-body p {
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      line-height: 1.85;
+    }
+    .about-body strong { color: var(--ink); font-weight: 500; }
+
+    .about-aside {}
+    .aside-block {
+      background: var(--card-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.6rem;
+      margin-bottom: 1.2rem;
+    }
+    .aside-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.9rem;
+    }
+    .aside-block ul { list-style: none; }
+    .aside-block ul li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .aside-block ul li:last-child { border-bottom: none; }
+    .aside-block ul li::before {
+      content: '↳';
+      color: var(--gold);
+      font-size: 0.7rem;
+    }
+
+    /* ── EXPERIENCE ── */
+    .experience-section { background: var(--ink); color: var(--paper); }
+    .experience-section .section-rule-line { background: #2a2d35; }
+    .experience-section .section-eyebrow { color: var(--gold); }
+    .experience-section .section-num { color: #2a2d35; }
+    .experience-section h2 { color: var(--paper); }
+
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.5rem; bottom: 0;
+      width: 1px;
+      background: #2a2d35;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .timeline-item.visible {
+      animation: fadeUp 0.5s forwards;
+    }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    .timeline-dot {
+      position: absolute;
+      left: -2.35rem;
+      top: 0.4rem;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid var(--ink);
+    }
+
+    .timeline-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--paper);
+    }
+    .timeline-company {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .timeline-period {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: #5a5e68;
+      margin-left: auto;
+    }
+
+    .timeline-desc {
+      font-size: 0.88rem;
+      color: #9ca3af;
+      margin-bottom: 1rem;
+      line-height: 1.75;
+    }
+
+    .timeline-highlights {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .timeline-highlights li {
+      font-size: 0.82rem;
+      color: #9ca3af;
+      padding-left: 1.2rem;
+      position: relative;
+      line-height: 1.65;
+    }
+    .timeline-highlights li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .skill-card {
+      background: var(--card-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.8rem;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: default;
+    }
+    .skill-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+    }
+    .skill-card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+    .skill-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+    .skill-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+    }
+    .skill-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      background: var(--tag-bg);
+      color: var(--muted);
+      border-radius: 2px;
+    }
+
+    /* ── LEARNING PATH ── */
+    .learning-section { background: var(--accent); }
+    .learning-section .section-rule-line { background: #254a70; }
+    .learning-section .section-eyebrow { color: var(--gold); }
+    .learning-section .section-num { color: #254a70; }
+    .learning-section h2 { color: var(--paper); }
+
+    .learning-intro {
+      color: rgba(255,255,255,0.65);
+      font-size: 1rem;
+      max-width: 640px;
+      margin-bottom: 3rem;
+      line-height: 1.8;
+    }
+
+    .learning-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .learning-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px;
+      padding: 1.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .learning-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .learning-card:hover::after { transform: scaleX(1); }
+
+    .learning-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .status-active .status-dot { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+    .status-active { color: #4ade80; }
+    .status-completed .status-dot { background: var(--gold); }
+    .status-completed { color: var(--gold); }
+    .status-planned .status-dot { background: #6b7280; }
+    .status-planned { color: #6b7280; }
+
+    .learning-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--paper);
+      margin-bottom: 0.5rem;
+    }
+    .learning-card-org {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 0.8rem;
+    }
+    .learning-card-desc {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+    }
+
+    /* ── CERTIFICATIONS ── */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+    .cert-card {
+      background: var(--card-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .cert-card:hover { border-color: var(--gold); }
+    .cert-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .cert-body {}
+    .cert-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+      line-height: 1.35;
+    }
+    .cert-issuer {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── PROJECTS (placeholder) ── */
+    .projects-placeholder {
+      border: 1px dashed var(--rule);
+      border-radius: 4px;
+      padding: 3rem;
+      text-align: center;
+    }
+    .projects-placeholder p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .projects-placeholder .comment {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--rule);
+      background: var(--tag-bg);
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.8rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .project-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+    .project-card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+    }
+    .project-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    .project-card-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    /* ── CONTACT ── */
+    .contact-section {
+      background: var(--ink);
+      text-align: center;
+    }
+    .contact-section h2 { color: var(--paper); }
+
+    .contact-sub {
+      color: #9ca3af;
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #2a2d35;
+      padding: 0.85rem 1.8rem;
+      border-radius: 2px;
+      transition: all 0.25s;
+    }
+    .contact-link:hover {
+      background: var(--gold);
+      color: var(--ink);
+      border-color: var(--gold);
+    }
+
+    footer {
+      background: #080a0e;
+      text-align: center;
+      padding: 1.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: #3a3d45;
+      text-transform: uppercase;
+    }
+
+    /* ── DIVIDER ── */
+    .full-rule {
+      border: none;
+      border-top: 1px solid var(--rule);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 6rem 1.5rem 3rem;
+        gap: 2.5rem;
+      }
+      section { padding: 3.5rem 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      h1 { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">R. Chandran</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#learning">Learning</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left fade-in visible">
+    <div class="hero-eyebrow">Solutions Architect · Insurance &amp; Cloud</div>
+    <h1>Rajthilak<br><em>Chandran</em></h1>
+    <p class="hero-tagline">
+      A rare bridge between legacy mainframe depth and modern cloud architecture.
+      Translating 17+ years of enterprise insurance expertise into scalable,
+      AI-augmented solutions for tomorrow's policy platforms.
+    </p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn btn-primary">Get In Touch</a>
+      <a href="#experience" class="btn btn-secondary">View Experience</a>
+    </div>
+    <div class="hero-badges">
+      <span class="badge highlight">AWS Certified SA</span>
+      <span class="badge">ALMI · Insurance Domain</span>
+      <span class="badge">Cloud Modernization</span>
+      <span class="badge">Mainframe + Cloud</span>
+      <span class="badge">Pre-Sales</span>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="stat-card">
+      <div class="stat-label">Years of Enterprise Experience</div>
+      <div class="stat-value">17+</div>
+      <div class="stat-desc">Across Cognizant → Mphasis → Canada Life → Manulife → DXC Technology</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Mission-Critical Interfaces Delivered</div>
+      <div class="stat-value">40+</div>
+      <div class="stat-desc">Legacy-to-modern integrations architected for Canada Life migration</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Team Leadership Scale</div>
+      <div class="stat-value">20–30</div>
+      <div class="stat-desc">Cross-functional, remote engineers led across design, dev &amp; QA</div>
+    </div>
+  </div>
+</div>
+
+<hr class="full-rule">
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-rule">
+    <span class="section-eyebrow">Who I Am</span>
+    <div class="section-rule-line"></div>
+    <span class="section-num">01</span>
+  </div>
+  <div class="about-grid">
+    <div class="about-body fade-in">
+      <h2>The Architect Who Speaks Both Languages</h2>
+      <p>
+        In a world where most architects operate on one side of the legacy-modern divide,
+        I live <strong>in the intersection</strong>. My career began deep in COBOL/CICS mainframe
+        engineering and has evolved into leading enterprise cloud transformations on AWS —
+        a combination that is genuinely rare in the Canadian insurance technology market.
+      </p>
+      <p>
+        At <strong>DXC Technology</strong>, I serve as a Solutions Architect driving long-term product
+        roadmaps for enterprise policy administration systems. I lead Pre-Sales engagements —
+        drafting SOWs, performing effort estimations, and building ROI narratives that turn
+        complex technical capabilities into business decisions.
+      </p>
+      <p>
+        I'm currently deepening my <strong>AI/ML skills</strong> at the University of Toronto, with a specific
+        focus on applying Generative AI to COBOL legacy analysis — a niche where very few
+        architects have hands-on practical experience. My target next step is a
+        <strong>Senior Solutions Architect or Director of Technology</strong> role
+        where I can shape strategy at the intersection of modernization, cloud, and AI.
+      </p>
+    </div>
+    <div class="about-aside fade-in">
+      <div class="aside-block">
+        <div class="aside-title">Domain Focus</div>
+        <ul>
+          <li>Life &amp; Annuities Insurance</li>
+          <li>Policy Administration Systems</li>
+          <li>Enterprise SaaS (Ingenium)</li>
+          <li>Cloud Modernization</li>
+          <li>Mainframe-to-Cloud Migration</li>
+        </ul>
+      </div>
+      <div class="aside-block">
+        <div class="aside-title">Currently Exploring</div>
+        <ul>
+          <li>ML &amp; Generative AI for legacy code</li>
+          <li>AI-augmented system discovery</li>
+          <li>AWS Advanced Architecture</li>
+          <li>Data Science foundations</li>
+        </ul>
+      </div>
+      <div class="aside-block">
+        <div class="aside-title">Location</div>
+        <ul>
+          <li>Ontario, Canada</li>
+          <li>Open to hybrid / remote</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE (dark) -->
+<div style="background: var(--ink);" id="experience">
+<section class="experience-section" style="background:transparent;">
+  <div class="section-rule">
+    <span class="section-eyebrow">Career Journey</span>
+    <div class="section-rule-line"></div>
+    <span class="section-num">02</span>
+  </div>
+  <h2 class="fade-in">Professional Experience</h2>
+  <br>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-header">
+        <span class="timeline-title">Solutions Architect</span>
+        <span class="timeline-company">DXC Technology</span>
+        <span class="timeline-period">Jul 2024 – Present</span>
+      </div>
+      <p class="timeline-desc">
+        Strategic technical lead for enterprise L&amp;A insurance SaaS — owning product roadmaps,
+        leading cloud transformation, and driving complex Pre-Sales engagements.
+      </p>
+      <ul class="timeline-highlights">
+        <li>Define long-term architecture roadmaps for enterprise policy administration systems</li>
+        <li>Technical lead for Pre-Sales: SOW drafting, effort estimation, price quoting &amp; ROI analysis</li>
+        <li>Spearheading Mainframe-to-Cloud and Mainframe-to-Distributed migration programs</li>
+        <li>Architecting COBOL/JCL/CICS ↔ modern distributed system interoperability via middleware &amp; APIs</li>
+        <li>Initiated ML/GenAI pilot to automate COBOL code analysis, cutting legacy discovery time significantly</li>
+        <li>Championing Agile/Scrum SDLC for global SaaS deployments</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-header">
+        <span class="timeline-title">Senior Software Engineer <span style="font-weight:300;font-size:1rem;">(Product Delivery Lead)</span></span>
+        <span class="timeline-company">Manulife</span>
+        <span class="timeline-period">May 2023 – Jul 2024</span>
+      </div>
+      <p class="timeline-desc">
+        Lead architect for a high-volume policy migration and legacy modernization,
+        operating at the intersection of business requirements and technical architecture.
+      </p>
+      <ul class="timeline-highlights">
+        <li>Led architecture for mass policy migration from third-party vendor to native PAS</li>
+        <li>Facilitated design workshops; conducted gap analyses and system impact studies</li>
+        <li>Audited EOL system components and designed zero-interruption replacement plans</li>
+        <li>Evaluated and integrated emerging technologies within the PAS ecosystem</li>
+        <li>Produced system models, architecture diagrams, and technical documentation</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-header">
+        <span class="timeline-title">Module Lead <span style="font-weight:300;font-size:1rem;">(Product &amp; Delivery)</span></span>
+        <span class="timeline-company">Canada Life · Mphasis</span>
+        <span class="timeline-period">Jul 2018 – Apr 2023</span>
+      </div>
+      <p class="timeline-desc">
+        Senior architect and team leader for one of Canada's largest insurance platform migrations —
+        managing 20–30 engineers across a multi-year, multi-phase transformation.
+      </p>
+      <ul class="timeline-highlights">
+        <li>Architected 40+ mission-critical legacy-to-modern interfaces with seamless data flow</li>
+        <li>Owned technical governance from planning through production deployment</li>
+        <li>Led and mentored a cross-functional remote team of 20–30 in design, dev &amp; QA</li>
+        <li>Built DevOps pipelines that significantly improved migration deployment reliability</li>
+        <li>Defined migration strategy, scope, and delivery plans for the interface layer</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-header">
+        <span class="timeline-title">Senior Software Developer</span>
+        <span class="timeline-company">Mphasis India</span>
+        <span class="timeline-period">Apr 2013 – Jun 2018</span>
+      </div>
+      <ul class="timeline-highlights">
+        <li>Full-stack Ingenium development: P-steps, S-steps, Flow files, Filter Selection programs</li>
+        <li>Mainframe backend engineering in COBOL, DB2, JCL across multiple OS environments</li>
+        <li>Ingenium Web Services integration and high-performance mainframe ETL processing</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-header">
+        <span class="timeline-title">Junior Product Specialist</span>
+        <span class="timeline-company">Cognizant India</span>
+        <span class="timeline-period">Aug 2008 – Mar 2013</span>
+      </div>
+      <ul class="timeline-highlights">
+        <li>Delivered high-quality components following SDLC in partnership with architecture and business teams</li>
+        <li>Expert troubleshooting across all environments; cross-functional engineering collaboration</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-rule">
+    <span class="section-eyebrow">Capabilities</span>
+    <div class="section-rule-line"></div>
+    <span class="section-num">03</span>
+  </div>
+  <h2 class="fade-in">Technical &amp; Strategic Skills</h2>
+  <br>
+  <div class="skills-grid">
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">☁️</div>
+      <div class="skill-card-title">Cloud Architecture</div>
+      <div class="skill-tags">
+        <span class="skill-tag">AWS</span>
+        <span class="skill-tag">Azure AZ-900</span>
+        <span class="skill-tag">Cloud Strategy</span>
+        <span class="skill-tag">Migration</span>
+        <span class="skill-tag">Serverless</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🏛️</div>
+      <div class="skill-card-title">Mainframe &amp; Legacy</div>
+      <div class="skill-tags">
+        <span class="skill-tag">COBOL</span>
+        <span class="skill-tag">CICS</span>
+        <span class="skill-tag">JCL</span>
+        <span class="skill-tag">DB2</span>
+        <span class="skill-tag">z/OS</span>
+        <span class="skill-tag">AS400</span>
+        <span class="skill-tag">Ingenium</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🏛️</div>
+      <div class="skill-card-title">Insurance Domain</div>
+      <div class="skill-tags">
+        <span class="skill-tag">L&amp;A Insurance</span>
+        <span class="skill-tag">Policy Admin</span>
+        <span class="skill-tag">Ingenium PAS</span>
+        <span class="skill-tag">LOMA/ALMI</span>
+        <span class="skill-tag">Regulatory</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">📐</div>
+      <div class="skill-card-title">Solution Architecture</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Roadmapping</span>
+        <span class="skill-tag">MVP Definition</span>
+        <span class="skill-tag">SOW Drafting</span>
+        <span class="skill-tag">Effort Estimation</span>
+        <span class="skill-tag">ROI Analysis</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🔗</div>
+      <div class="skill-card-title">Integration &amp; APIs</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Middleware</span>
+        <span class="skill-tag">Web Services</span>
+        <span class="skill-tag">ETL</span>
+        <span class="skill-tag">LDAP</span>
+        <span class="skill-tag">OAuth</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🤖</div>
+      <div class="skill-card-title">AI / ML (Emerging)</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Machine Learning</span>
+        <span class="skill-tag">Generative AI</span>
+        <span class="skill-tag">Legacy Code Analysis</span>
+        <span class="skill-tag">Data Science</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">⚙️</div>
+      <div class="skill-card-title">Engineering &amp; DevOps</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">HTML/CSS/JS</span>
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">DevOps</span>
+        <span class="skill-tag">CI/CD</span>
+        <span class="skill-tag">Java</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🤝</div>
+      <div class="skill-card-title">Leadership &amp; Pre-Sales</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Agile/Scrum</span>
+        <span class="skill-tag">Stakeholder Mgmt</span>
+        <span class="skill-tag">Executive Reporting</span>
+        <span class="skill-tag">Vendor Mgmt</span>
+        <span class="skill-tag">Team Mentorship</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING PATH (accent) -->
+<div style="background: var(--accent);" id="learning">
+<section class="learning-section" style="background:transparent;">
+  <div class="section-rule">
+    <span class="section-eyebrow">Current Learning Path</span>
+    <div class="section-rule-line"></div>
+    <span class="section-num">04</span>
+  </div>
+  <h2 class="fade-in">Investing in What's Next</h2>
+  <p class="learning-intro fade-in">
+    Architecture is a discipline of continuous reinvention. My current learning path
+    is intentionally focused on AI/ML and advanced data science — capabilities that
+    will define the next generation of enterprise modernization.
+  </p>
+  <div class="learning-grid">
+
+    <div class="learning-card fade-in">
+      <div class="learning-status status-active">
+        <span class="status-dot"></span> In Progress
+      </div>
+      <div class="learning-card-title">Machine Learning Software Foundations</div>
+      <div class="learning-card-org">Data Science Institute · University of Toronto</div>
+      <div class="learning-card-desc">
+        Hands-on ML foundations: supervised/unsupervised learning, model evaluation,
+        and practical application to real-world engineering problems.
+      </div>
+    </div>
+
+    <div class="learning-card fade-in">
+      <div class="learning-status status-active">
+        <span class="status-dot"></span> In Progress
+      </div>
+      <div class="learning-card-title">Foundations of Data Science</div>
+      <div class="learning-card-org">School of Continuing Studies · University of Toronto</div>
+      <div class="learning-card-desc">
+        Building a rigorous statistical and analytical foundation to complement
+        my architecture background with data-driven decision making.
+      </div>
+    </div>
+
+    <div class="learning-card fade-in">
+      <div class="learning-status status-completed">
+        <span class="status-dot"></span> Completed
+      </div>
+      <div class="learning-card-title">AWS Certified Solutions Architect – Associate</div>
+      <div class="learning-card-org">Amazon Web Services</div>
+      <div class="learning-card-desc">
+        Certified in designing distributed systems on AWS, including networking,
+        storage, compute, and security best practices.
+      </div>
+    </div>
+
+    <div class="learning-card fade-in">
+      <div class="learning-status status-planned">
+        <span class="status-dot"></span> Planned
+      </div>
+      <div class="learning-card-title">AWS Certified Solutions Architect – Professional</div>
+      <div class="learning-card-org">Amazon Web Services</div>
+      <div class="learning-card-desc">
+        Next certification target — advanced multi-account, hybrid, and large-scale
+        AWS architecture design for enterprise environments.
+      </div>
+    </div>
+
+    <div class="learning-card fade-in">
+      <div class="learning-status status-planned">
+        <span class="status-dot"></span> Planned
+      </div>
+      <div class="learning-card-title">GenAI for Enterprise Modernization</div>
+      <div class="learning-card-org">Self-directed · Applied Research</div>
+      <div class="learning-card-desc">
+        Applying Large Language Models to COBOL legacy code analysis — a niche
+        research area emerging from my work at DXC Technology.
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-rule">
+    <span class="section-eyebrow">Credentials</span>
+    <div class="section-rule-line"></div>
+    <span class="section-num">05</span>
+  </div>
+  <h2 class="fade-in">Certifications &amp; Education</h2>
+  <br>
+  <div class="cert-grid">
+    <div class="cert-card fade-in">
+      <div class="cert-icon">☁️</div>
+      <div class="cert-body">
+        <div class="cert-name">AWS Certified Solutions Architect – Associate</div>
+        <div class="cert-issuer">Amazon Web Services</div>
+      </div>
+    </div>
+    <div class="cert-card fade-in">
+      <div class="cert-icon">☁️</div>
+      <div class="cert-body">
+        <div class="cert-name">AWS Certified Cloud Practitioner</div>
+        <div class="cert-issuer">Amazon Web Services</div>
+      </div>
+    </div>
+    <div class="cert-card fade-in">
+      <div class="cert-icon">🔷</div>
+      <div class="cert-body">
+        <div class="cert-name">Microsoft Azure Fundamentals – AZ-900</div>
+        <div class="cert-issuer">Microsoft</div>
+      </div>
+    </div>
+    <div class="cert-card fade-in">
+      <div class="cert-icon">🏦</div>
+      <div class="cert-body">
+        <div class="cert-name">ALMI – Associate, Life Management Institute</div>
+        <div class="cert-issuer">LOMA · Life Insurance Domain Expert</div>
+      </div>
+    </div>
+    <div class="cert-card fade-in">
+      <div class="cert-icon">☕</div>
+      <div class="cert-body">
+        <div class="cert-name">Sun Certified Java Developer</div>
+        <div class="cert-issuer">Sun Microsystems / Oracle</div>
+      </div>
+    </div>
+    <div class="cert-card fade-in">
+      <div class="cert-icon">🎓</div>
+      <div class="cert-body">
+        <div class="cert-name">Master of Computer Application</div>
+        <div class="cert-issuer">SRM University, India</div>
+      </div>
+    </div>
+    <div class="cert-card fade-in">
+      <div class="cert-icon">🎓</div>
+      <div class="cert-body">
+        <div class="cert-name">Bachelor of Science – Computer Science</div>
+        <div class="cert-issuer">Sacred Heart College, India</div>
+      </div>
+    </div>
+  </div>
+  <!-- ADD MORE CERTS HERE — duplicate a .cert-card block above -->
+</section>
+
+<hr class="full-rule">
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-rule">
+    <span class="section-eyebrow">Work in Progress</span>
+    <div class="section-rule-line"></div>
+    <span class="section-num">06</span>
+  </div>
+  <h2 class="fade-in">Projects</h2>
+
+  <div class="projects-placeholder fade-in">
+    <p>Projects coming soon — check back shortly</p>
+    <div class="comment">&lt;!-- Add your project cards below this section --&gt;</div>
+  </div>
+
+  <!-- UNCOMMENT AND FILL IN when you have projects to showcase:
+
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-card-label">In Progress · AI/ML</div>
+      <div class="project-card-title">GenAI-Powered COBOL Analyser</div>
+      <div class="project-card-desc">
+        Using large language models to automatically document and map legacy COBOL programs,
+        reducing modernization discovery time from weeks to hours.
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">OpenAI</span>
+        <span class="skill-tag">COBOL</span>
+        <span class="skill-tag">AWS Lambda</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-card-label">Completed · Architecture</div>
+      <div class="project-card-title">Your Project Title Here</div>
+      <div class="project-card-desc">
+        Brief description of what you built, the problem it solved, and the impact it had.
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Tag 1</span>
+        <span class="skill-tag">Tag 2</span>
+      </div>
+    </div>
+  </div>
+
+  -->
+</section>
+
+<!-- CONTACT (dark) -->
+<div style="background: var(--ink);" id="contact">
+<section class="contact-section" style="background:transparent;">
+  <div class="section-rule">
+    <span class="section-eyebrow">Let's Connect</span>
+    <div class="section-rule-line"></div>
+    <span class="section-num">07</span>
+  </div>
+  <h2 class="fade-in">Open to Senior Opportunities</h2>
+  <p class="contact-sub fade-in">
+    Targeting <strong style="color:var(--gold)">Senior Solutions Architect</strong> and
+    <strong style="color:var(--gold)">Director of Technology</strong> roles in Canadian
+    insurance, financial services, or enterprise cloud transformation.
+  </p>
+  <div class="contact-links fade-in">
+    <a class="contact-link" href="mailto:rajthilakcrt@gmail.com">
+      ✉ Email Me
+    </a>
+    <a class="contact-link" href="https://www.linkedin.com/in/crthilak/" target="_blank" rel="noopener">
+      ↗ LinkedIn
+    </a>
+    <a class="contact-link" href="tel:5196709339">
+      ☎ 519-670-9339
+    </a>
+  </div>
+</section>
+</div>
+
+<footer>
+  © 2025 Rajthilak Chandran · Built with GitHub Pages ·
+  <a href="https://www.linkedin.com/in/crthilak/" style="color:inherit;">linkedin.com/in/crthilak</a>
+</footer>
+
+<script>
+  // Scroll-triggered fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // also trigger timeline items
+        if (e.target.classList.contains('timeline-item')) {
+          e.target.classList.add('visible');
+        }
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in, .timeline-item').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
