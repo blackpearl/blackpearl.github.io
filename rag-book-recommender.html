@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RAG Book Recommender — Project Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg:         #0d1117;
+      --bg2:        #161b22;
+      --bg3:        #1c2330;
+      --border:     #30363d;
+      --teal:       #00d4aa;
+      --teal-dim:   #00d4aa22;
+      --teal-mid:   #00d4aa55;
+      --gold:       #e3a11a;
+      --gold-dim:   #e3a11a18;
+      --red:        #f85149;
+      --blue:       #58a6ff;
+      --text:       #e6edf3;
+      --text-muted: #7d8590;
+      --text-dim:   #c9d1d9;
+      --mono:       'DM Mono', 'Fira Code', monospace;
+      --sans:       'DM Sans', system-ui, sans-serif;
+      --display:    'Syne', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(13,17,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    .nav-dot {
+      width: 8px; height: 8px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    .nav-links {
+      display: flex; gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--teal); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 7rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(0,212,170,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(88,166,255,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.3;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--teal-mid);
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+      background: var(--teal-dim);
+    }
+
+    .hero h1 {
+      font-family: var(--display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 .accent { color: var(--teal); }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      font-weight: 300;
+      max-width: 620px;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.5rem;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: var(--bg);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #00f0c2;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0,212,170,0.25);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    /* ── Stack pills ── */
+    .stack-pills {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 3rem;
+    }
+
+    .pill {
+      padding: 0.25rem 0.7rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Sections ── */
+    section {
+      padding: 5rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--teal);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-family: var(--display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      line-height: 1.2;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── Architecture diagram ── */
+    .arch-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      margin-top: 2.5rem;
+      overflow-x: auto;
+    }
+
+    /* ── Pipeline steps ── */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0;
+      margin-top: 2.5rem;
+      position: relative;
+    }
+
+    .pipeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      position: relative;
+    }
+
+    .pipeline-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--teal);
+      font-size: 1.2rem;
+      z-index: 1;
+    }
+
+    .step-num {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--teal);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--teal);
+      margin-bottom: 0.75rem;
+      background: var(--teal-dim);
+    }
+
+    .step-title {
+      font-family: var(--display);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+    }
+
+    .step-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    /* ── Use case cards ── */
+    .usecases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+
+    .usecase-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .usecase-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--card-accent, var(--teal));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+
+    .usecase-card:hover {
+      border-color: var(--card-accent, var(--teal));
+      transform: translateY(-3px);
+    }
+
+    .usecase-card:hover::before { transform: scaleX(1); }
+
+    .card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .usecase-card h3 {
+      font-family: var(--display);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: var(--text);
+    }
+
+    .usecase-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .usecase-card .tag-row {
+      display: flex; flex-wrap: wrap; gap: 0.35rem;
+      margin-top: 1rem;
+    }
+
+    .usecase-card .micro-tag {
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      background: var(--bg3);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Future steps ── */
+    .future-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+
+    .future-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .future-card:hover { border-color: var(--gold); }
+
+    .future-card .future-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .future-card h3 {
+      font-family: var(--display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .future-card p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── Code block ── */
+    .code-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      line-height: 1.8;
+      overflow-x: auto;
+      margin-top: 1.25rem;
+    }
+
+    .code-block .c  { color: var(--text-muted); font-style: italic; }
+    .code-block .k  { color: var(--teal); }
+    .code-block .s  { color: var(--gold); }
+    .code-block .fn { color: var(--blue); }
+
+    /* ── Highlight box ── */
+    .highlight-box {
+      background: var(--teal-dim);
+      border: 1px solid var(--teal-mid);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.75;
+    }
+
+    .highlight-box strong { color: var(--teal); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    footer a { color: var(--teal); text-decoration: none; }
+
+    /* ── Animations ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-inner > * {
+      animation: fadeIn 0.7s ease both;
+    }
+
+    .hero-inner > *:nth-child(1) { animation-delay: 0.1s; }
+    .hero-inner > *:nth-child(2) { animation-delay: 0.2s; }
+    .hero-inner > *:nth-child(3) { animation-delay: 0.3s; }
+    .hero-inner > *:nth-child(4) { animation-delay: 0.4s; }
+    .hero-inner > *:nth-child(5) { animation-delay: 0.5s; }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      section { padding: 3.5rem 1.25rem; }
+      .pipeline-step:not(:last-child)::after { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a class="nav-brand" href="#">
+      <span class="nav-dot"></span>
+      rag-book-recommender
+    </a>
+    <ul class="nav-links">
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#insurance">Insurance</a></li>
+      <li><a href="#usecases">Use Cases</a></li>
+      <li><a href="#future">Future Steps</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+      <div class="badge">
+        <span>◈</span> RAG · Vector Search · Local LLM
+      </div>
+      <h1>
+        Building a <span class="accent">Local RAG</span><br/>
+        Knowledge Chatbot
+      </h1>
+      <p class="hero-desc">
+        A fully local Retrieval-Augmented Generation system that transforms any structured
+        knowledge source into an intelligent, conversational query engine —
+        no cloud APIs, no data leaving your environment.
+      </p>
+      <div class="hero-actions">
+        <a href="#architecture" class="btn btn-primary">Explore Architecture →</a>
+        <a href="#insurance" class="btn btn-outline">Industry Applications</a>
+      </div>
+      <div class="stack-pills">
+        <span class="pill">Python</span>
+        <span class="pill">FastAPI</span>
+        <span class="pill">Weaviate Embedded</span>
+        <span class="pill">Ollama</span>
+        <span class="pill">nomic-embed-text</span>
+        <span class="pill">llama3.2</span>
+        <span class="pill">BeautifulSoup</span>
+        <span class="pill">httpx</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- Overview -->
+  <section id="overview" class="reveal">
+    <div class="section-label">// overview</div>
+    <h2>What This Project Does</h2>
+    <p style="color:var(--text-dim); max-width:700px; font-size:0.95rem; line-height:1.85;">
+      This project demonstrates how to build a production-ready RAG pipeline entirely on local
+      infrastructure. It ingests book summaries from a web source, stores semantic embeddings
+      in a persistent vector database, and powers a conversational chatbot that retrieves
+      and reasons over that knowledge — all without a single external API call.
+    </p>
+
+    <div class="highlight-box">
+      <strong>The core insight:</strong> RAG separates <em>knowledge storage</em> from
+      <em>reasoning</em>. Your documents live in a vector database as embeddings; when a user
+      asks a question, the system retrieves only the most relevant chunks and hands them to
+      the language model as context. The LLM never needs to memorise your data — it just
+      needs to read and reason over what's retrieved.
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Architecture -->
+  <section id="architecture" class="reveal">
+    <div class="section-label">// architecture</div>
+    <h2>System Architecture</h2>
+    <p style="color:var(--text-dim); font-size:0.9rem; max-width:680px;">
+      The system is split into two distinct phases: an offline ingestion pipeline that runs
+      once, and an online query pipeline that serves every user request.
+    </p>
+
+    <div class="arch-wrap">
+      <svg viewBox="0 0 860 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:640px;font-family:'DM Mono',monospace;">
+        <!-- Background lanes -->
+        <rect x="10" y="10" width="380" height="300" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+        <rect x="410" y="10" width="440" height="300" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+
+        <!-- Lane labels -->
+        <text x="30" y="34" fill="#7d8590" font-size="10" letter-spacing="2">OFFLINE — INGESTION</text>
+        <text x="430" y="34" fill="#7d8590" font-size="10" letter-spacing="2">ONLINE — QUERY</text>
+
+        <!-- Ingestion nodes -->
+        <rect x="30" y="50" width="120" height="44" rx="4" fill="#1c2330" stroke="#00d4aa55"/>
+        <text x="90" y="68" fill="#00d4aa" font-size="9" text-anchor="middle" letter-spacing="1">CONTENT SOURCE</text>
+        <text x="90" y="82" fill="#c9d1d9" font-size="10" text-anchor="middle">Web Scraper</text>
+
+        <line x1="150" y1="72" x2="185" y2="72" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <rect x="185" y="50" width="120" height="44" rx="4" fill="#1c2330" stroke="#00d4aa55"/>
+        <text x="245" y="68" fill="#00d4aa" font-size="9" text-anchor="middle" letter-spacing="1">EMBEDDING</text>
+        <text x="245" y="82" fill="#c9d1d9" font-size="10" text-anchor="middle">Ollama · nomic</text>
+
+        <line x1="245" y1="94" x2="245" y2="124" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <rect x="110" y="124" width="270" height="44" rx="4" fill="#1c2330" stroke="#00d4aa88"/>
+        <text x="245" y="142" fill="#00d4aa" font-size="9" text-anchor="middle" letter-spacing="1">VECTOR STORE</text>
+        <text x="245" y="156" fill="#c9d1d9" font-size="10" text-anchor="middle">Weaviate Embedded  ·  books_all.json</text>
+
+        <!-- Ingestion note -->
+        <rect x="30" y="200" width="340" height="90" rx="4" fill="#0d1117" stroke="#30363d" stroke-dasharray="4 3"/>
+        <text x="200" y="220" fill="#7d8590" font-size="9" text-anchor="middle" letter-spacing="1">INGESTION STEPS</text>
+        <text x="50" y="240" fill="#58a6ff" font-size="9">1.</text>
+        <text x="62" y="240" fill="#7d8590" font-size="9">Fetch &amp; parse pages → structured JSON</text>
+        <text x="50" y="256" fill="#58a6ff" font-size="9">2.</text>
+        <text x="62" y="256" fill="#7d8590" font-size="9">Generate embeddings per summary via Ollama</text>
+        <text x="50" y="272" fill="#58a6ff" font-size="9">3.</text>
+        <text x="62" y="272" fill="#7d8590" font-size="9">Upsert vectors + metadata into Weaviate</text>
+
+        <!-- Query pipeline nodes -->
+        <rect x="430" y="50" width="120" height="44" rx="4" fill="#1c2330" stroke="#58a6ff55"/>
+        <text x="490" y="68" fill="#58a6ff" font-size="9" text-anchor="middle" letter-spacing="1">USER QUERY</text>
+        <text x="490" y="82" fill="#c9d1d9" font-size="10" text-anchor="middle">FastAPI · Chat UI</text>
+
+        <line x1="550" y1="72" x2="580" y2="72" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <rect x="580" y="50" width="120" height="44" rx="4" fill="#1c2330" stroke="#58a6ff55"/>
+        <text x="640" y="68" fill="#58a6ff" font-size="9" text-anchor="middle" letter-spacing="1">CLASSIFY + TAG</text>
+        <text x="640" y="82" fill="#c9d1d9" font-size="10" text-anchor="middle">llama3.2 guardrail</text>
+
+        <line x1="640" y1="94" x2="640" y2="124" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <rect x="580" y="124" width="120" height="44" rx="4" fill="#1c2330" stroke="#58a6ff55"/>
+        <text x="640" y="142" fill="#58a6ff" font-size="9" text-anchor="middle" letter-spacing="1">EMBED QUERY</text>
+        <text x="640" y="156" fill="#c9d1d9" font-size="10" text-anchor="middle">nomic-embed-text</text>
+
+        <line x1="640" y1="168" x2="640" y2="196" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <rect x="580" y="196" width="120" height="44" rx="4" fill="#1c2330" stroke="#00d4aa88"/>
+        <text x="640" y="214" fill="#00d4aa" font-size="9" text-anchor="middle" letter-spacing="1">VECTOR SEARCH</text>
+        <text x="640" y="228" fill="#c9d1d9" font-size="10" text-anchor="middle">near_vector + filter</text>
+
+        <line x1="580" y1="218" x2="430" y2="218" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+        <text x="505" y="212" fill="#7d8590" font-size="8" text-anchor="middle">reads from</text>
+
+        <line x1="640" y1="240" x2="640" y2="268" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <rect x="430" y="268" width="270" height="36" rx="4" fill="#1c2330" stroke="#e3a11a55"/>
+        <text x="565" y="282" fill="#e3a11a" font-size="9" text-anchor="middle" letter-spacing="1">GENERATE ANSWER</text>
+        <text x="565" y="296" fill="#c9d1d9" font-size="10" text-anchor="middle">llama3.2 · RAG prompt → response</text>
+
+        <!-- Arrow marker -->
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#30363d"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- Pipeline steps text -->
+    <div class="pipeline" style="margin-top:2.5rem;">
+      <div class="pipeline-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Classify</div>
+        <div class="step-sub">llama3.2 guardrail</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">2</div>
+        <div class="step-title">Tag Extract</div>
+        <div class="step-sub">semantic + keyword</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">3</div>
+        <div class="step-title">Embed</div>
+        <div class="step-sub">nomic-embed-text</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">4</div>
+        <div class="step-title">Retrieve</div>
+        <div class="step-sub">near_vector + filter</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">5</div>
+        <div class="step-title">Generate</div>
+        <div class="step-sub">llama3.2 · RAG</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Insurance section -->
+  <section id="insurance" class="reveal">
+    <div class="section-label">// industry application</div>
+    <h2>Transforming the Insurance Industry</h2>
+    <p style="color:var(--text-dim); font-size:0.95rem; max-width:700px; line-height:1.85; margin-bottom:1rem;">
+      The same RAG architecture powering this book chatbot is directly applicable to one of
+      the most document-heavy, compliance-sensitive industries in the world: insurance.
+      Insurance companies sit on vast repositories of unstructured knowledge — policy documents,
+      claim guidelines, regulatory filings, product manuals — that are difficult for both
+      customers and internal teams to navigate.
+    </p>
+    <p style="color:var(--text-dim); font-size:0.95rem; max-width:700px; line-height:1.85;">
+      A RAG system turns that static knowledge into a <strong style="color:var(--text)">live, queryable intelligence layer</strong> —
+      without fine-tuning a model or sending sensitive data to a public API.
+    </p>
+
+    <div class="highlight-box" style="margin-top:1.75rem;">
+      <strong>Why local RAG matters for insurance:</strong> Policy documents, claims data, and
+      customer records are highly sensitive. Running Ollama + Weaviate Embedded keeps everything
+      on-premises — no data leaves the organisation, satisfying GDPR, HIPAA, and internal
+      compliance requirements out of the box.
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Use cases -->
+  <section id="usecases" class="reveal">
+    <div class="section-label">// use cases</div>
+    <h2>Insurance Use Cases</h2>
+
+    <div class="usecases">
+
+      <div class="usecase-card" style="--card-accent: #00d4aa;">
+        <div class="card-icon">💬</div>
+        <h3>Customer Service Chatbot</h3>
+        <p>
+          Ingest all policy documents, FAQs, and coverage guides. Customers ask natural language
+          questions — "does my policy cover flood damage?" — and get precise, cited answers
+          instead of waiting on hold. Semantic search finds the relevant policy clause even
+          when the customer's phrasing doesn't match the document exactly.
+        </p>
+        <div class="tag-row">
+          <span class="micro-tag">policy docs</span>
+          <span class="micro-tag">24/7 self-service</span>
+          <span class="micro-tag">citation grounded</span>
+        </div>
+      </div>
+
+      <div class="usecase-card" style="--card-accent: #58a6ff;">
+        <div class="card-icon">📋</div>
+        <h3>Product Documentation Query Tool</h3>
+        <p>
+          Internal teams — underwriters, agents, brokers — need rapid access to product
+          specifications, pricing rules, and eligibility criteria spread across hundreds of
+          PDFs. A RAG chatbot lets them query in plain English and get structured answers
+          with source references, drastically cutting research time.
+        </p>
+        <div class="tag-row">
+          <span class="micro-tag">internal knowledge</span>
+          <span class="micro-tag">underwriting</span>
+          <span class="micro-tag">agent enablement</span>
+        </div>
+      </div>
+
+      <div class="usecase-card" style="--card-accent: #e3a11a;">
+        <div class="card-icon">⚖️</div>
+        <h3>Claims Guidance Assistant</h3>
+        <p>
+          Claims adjusters handle dozens of edge cases daily. A RAG system ingested with
+          claims handling guidelines, precedent decisions, and regulatory rules can surface
+          the right guidance for a given scenario — reducing inconsistency, errors, and the
+          time-to-decision on complex claims.
+        </p>
+        <div class="tag-row">
+          <span class="micro-tag">claims ops</span>
+          <span class="micro-tag">decision support</span>
+          <span class="micro-tag">consistency</span>
+        </div>
+      </div>
+
+      <div class="usecase-card" style="--card-accent: #f85149;">
+        <div class="card-icon">📊</div>
+        <h3>Regulatory Compliance Monitor</h3>
+        <p>
+          Ingest regulatory bulletins, state filings, and compliance memos. Compliance teams
+          can ask "what changed in the Ontario auto regulations this quarter?" and get a
+          synthesised answer from the ingested documents — making it easier to track
+          obligations across jurisdictions.
+        </p>
+        <div class="tag-row">
+          <span class="micro-tag">regulatory</span>
+          <span class="micro-tag">multi-jurisdiction</span>
+          <span class="micro-tag">change tracking</span>
+        </div>
+      </div>
+
+      <div class="usecase-card" style="--card-accent: #bc8cff;">
+        <div class="card-icon">🎓</div>
+        <h3>Agent Training & Onboarding</h3>
+        <p>
+          New agents struggle to absorb thousands of pages of product and process
+          documentation. A RAG chatbot acts as an always-available mentor — agents ask
+          questions during their first months and get precise answers grounded in official
+          training material, accelerating time-to-competency.
+        </p>
+        <div class="tag-row">
+          <span class="micro-tag">onboarding</span>
+          <span class="micro-tag">L&D</span>
+          <span class="micro-tag">knowledge retention</span>
+        </div>
+      </div>
+
+      <div class="usecase-card" style="--card-accent: #3fb950;">
+        <div class="card-icon">🔍</div>
+        <h3>Risk Assessment Knowledge Base</h3>
+        <p>
+          Underwriters evaluating complex risks need quick access to actuarial tables,
+          risk appetite statements, and historical precedents. A RAG layer over these
+          documents lets underwriters query scenario-specific risk guidance and retrieve
+          comparable past decisions — improving pricing accuracy and consistency.
+        </p>
+        <div class="tag-row">
+          <span class="micro-tag">underwriting</span>
+          <span class="micro-tag">actuarial</span>
+          <span class="micro-tag">risk appetite</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Future Steps -->
+  <section id="future" class="reveal">
+    <div class="section-label">// roadmap</div>
+    <h2>Future Steps & Improvements</h2>
+    <p style="color:var(--text-dim); font-size:0.9rem; max-width:680px; margin-bottom:0.5rem;">
+      This project is a working foundation. Below are the most impactful directions
+      for making the system more accurate, robust, and production-ready.
+    </p>
+
+    <div class="future-grid">
+
+      <div class="future-card">
+        <div class="future-label">filtering</div>
+        <h3>Hybrid BM25 + Vector Search</h3>
+        <p>
+          Combine dense vector search (semantic similarity) with sparse BM25 keyword search.
+          Weaviate supports hybrid search natively — tuning the alpha parameter allows
+          fine-grained control over how much weight to give semantic vs. lexical matching,
+          improving precision on domain-specific terminology.
+        </p>
+      </div>
+
+      <div class="future-card">
+        <div class="future-label">filtering</div>
+        <h3>Dynamic Tag Vocabulary</h3>
+        <p>
+          Instead of a hardcoded <code style="font-family:var(--mono);font-size:0.8rem;color:var(--teal)">KNOWN_TAGS</code> list,
+          derive tags automatically from the ingested content using clustering or topic modelling.
+          As new content is added, the tag vocabulary evolves — no manual maintenance required.
+        </p>
+      </div>
+
+      <div class="future-card">
+        <div class="future-label">filtering</div>
+        <h3>Query Rewriting</h3>
+        <p>
+          Before embedding, use the LLM to rewrite the user query into an optimal retrieval
+          form. For example, "something about getting better at work" becomes
+          "books on career development, productivity, and professional growth" — improving
+          vector search recall significantly.
+        </p>
+      </div>
+
+      <div class="future-card">
+        <div class="future-label">evals</div>
+        <h3>Retrieval Quality Evals</h3>
+        <p>
+          Build an evaluation harness using a ground-truth dataset of (query → expected books)
+          pairs. Measure Recall@K and MRR (Mean Reciprocal Rank) to quantify how well the
+          retrieval step is performing. Run evals on every change to the embedding model
+          or chunking strategy.
+        </p>
+      </div>
+
+      <div class="future-card">
+        <div class="future-label">evals</div>
+        <h3>Answer Faithfulness Evals</h3>
+        <p>
+          Use an LLM-as-judge approach (or a framework like RAGAS) to score whether the
+          generated answer is grounded in the retrieved context. Catch hallucinations early —
+          especially critical in regulated industries where a wrong answer has real consequences.
+        </p>
+      </div>
+
+      <div class="future-card">
+        <div class="future-label">evals</div>
+        <h3>Guardrail Accuracy Evals</h3>
+        <p>
+          The query classifier (<code style="font-family:var(--mono);font-size:0.8rem;color:var(--teal)">is_book_recommendation_query</code>)
+          needs its own eval set of positive and negative examples. Track false positive rate
+          (valid queries incorrectly rejected) and false negative rate (off-topic queries
+          that slip through) separately.
+        </p>
+      </div>
+
+      <div class="future-card">
+        <div class="future-label">infrastructure</div>
+        <h3>Chunking Strategy</h3>
+        <p>
+          Currently each book is stored as a single vector over its full summary. For longer
+          documents, splitting into overlapping chunks (with a sliding window) dramatically
+          improves retrieval precision — the model retrieves the specific relevant passage,
+          not a diluted whole-document embedding.
+        </p>
+      </div>
+
+      <div class="future-card">
+        <div class="future-label">infrastructure</div>
+        <h3>Incremental Re-ingestion</h3>
+        <p>
+          Build a scheduled crawler that detects new or updated content and re-ingests only
+          the delta. Combined with the existing <code style="font-family:var(--mono);font-size:0.8rem;color:var(--teal)">wp_post_id</code>
+          idempotency key, this keeps the knowledge base fresh without a full rebuild.
+        </p>
+      </div>
+
+      <div class="future-card">
+        <div class="future-label">ux</div>
+        <h3>Streaming Responses</h3>
+        <p>
+          Switch the Ollama generation call to streaming mode and pipe tokens to the UI
+          via Server-Sent Events (SSE). Answers appear word-by-word, dramatically improving
+          perceived latency — especially important when llama3.2 is generating long responses
+          on CPU.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- Code snippet section -->
+  <section class="reveal">
+    <div class="section-label">// key pattern</div>
+    <h2>The Core RAG Pattern</h2>
+    <p style="color:var(--text-dim);font-size:0.9rem;max-width:680px;">
+      The entire pipeline reduces to a single composable function. This is the pattern
+      that makes RAG so powerful — and so portable across domains.
+    </p>
+
+    <div class="code-block">
+<span class="k">def</span> <span class="fn">run_rag_query</span>(query: str, db: WeaviateClient) → dict:<br/>
+&nbsp;&nbsp;<span class="c"># 1. Guard: is this a valid domain query?</span><br/>
+&nbsp;&nbsp;<span class="k">if not</span> <span class="fn">is_valid_query</span>(query): <span class="k">return</span> rejection<br/><br/>
+&nbsp;&nbsp;<span class="c"># 2. Extract structured filters from natural language</span><br/>
+&nbsp;&nbsp;filters = <span class="fn">extract_filters_semantic</span>(query)  <span class="c"># LLM → structured</span><br/><br/>
+&nbsp;&nbsp;<span class="c"># 3. Embed the query into vector space</span><br/>
+&nbsp;&nbsp;vector  = <span class="fn">embed</span>(query)  <span class="c"># same model used at ingest time</span><br/><br/>
+&nbsp;&nbsp;<span class="c"># 4. Retrieve: semantic similarity + metadata filters</span><br/>
+&nbsp;&nbsp;context = <span class="fn">db.near_vector</span>(vector, filters=filters, limit=<span class="s">5</span>)<br/><br/>
+&nbsp;&nbsp;<span class="c"># 5. Generate: ground the LLM in retrieved context</span><br/>
+&nbsp;&nbsp;<span class="k">return</span> <span class="fn">llm.generate</span>(<span class="fn">build_prompt</span>(query, context))
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <footer>
+    Built with Python · FastAPI · Weaviate Embedded · Ollama ·
+    <a href="https://unleashtheyou.com" target="_blank">unleashtheyou.com</a>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
