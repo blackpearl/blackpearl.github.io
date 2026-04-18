@@ -754,12 +754,12 @@
     <div class="stat-card">
       <div class="stat-label">Years of Enterprise Experience</div>
       <div class="stat-value">17+</div>
-      <div class="stat-desc">Across Cognizant → Mphasis → Canada Life → Manulife → DXC Technology</div>
+      <div class="stat-desc">Multiple Life Insurance industries across Asia, US and Canada markets</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Mission-Critical Interfaces Delivered</div>
-      <div class="stat-value">40+</div>
-      <div class="stat-desc">Legacy-to-modern integrations architected for Canada Life migration</div>
+      <div class="stat-label">Mission-Critical Projects Delivered</div>
+      <div class="stat-value">15+</div>
+      <div class="stat-desc">Multiple modernization projects, end-to-end migrations, product development</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Team Leadership Scale</div>
@@ -794,9 +794,7 @@
         complex technical capabilities into business decisions.
       </p>
       <p>
-        I'm currently deepening my <strong>AI/ML skills</strong> at the University of Toronto, with a specific
-        focus on applying Generative AI to COBOL legacy analysis — a niche where very few
-        architects have hands-on practical experience. My target next step is a
+        I'm actively deepening my <strong>AI/ML expertise</strong> across multiple institutions — including the highly regarded <strong>University of Toronto</strong> — by building hands-on mini use cases purpose-built for the insurance industry, from claims automation to GenAI-driven legacy analysis. My target next step is a
         <strong>Senior Solutions Architect or Director of Technology</strong> role
         where I can shape strategy at the intersection of modernization, cloud, and AI.
       </p>
@@ -1060,6 +1058,31 @@
       <div class="learning-status status-active">
         <span class="status-dot"></span> In Progress
       </div>
+      <div class="learning-card-title">Machine Learning Specialization</div>
+      <div class="learning-card-org">DeepLearning.AI · Coursera</div>
+      <div class="learning-card-desc">
+        Comprehensive three-course specialization taught by Andrew Ng — covering supervised
+        learning, advanced algorithms (decision trees, neural networks), and unsupervised
+        learning techniques directly applicable to enterprise AI initiatives.
+      </div>
+    </div>
+        
+    <div class="learning-card fade-in">
+      <div class="learning-status status-planned">
+        <span class="status-dot"></span> Planned
+      </div>
+      <div class="learning-card-title">GenAI for Enterprise Modernization</div>
+      <div class="learning-card-org">Self-directed · Applied Research</div>
+      <div class="learning-card-desc">
+        Applying Large Language Models to  legacy code analysis — a niche
+        research area.
+      </div>
+    </div>
+
+    <div class="learning-card fade-in">
+      <div class="learning-status status-completed">
+        <span class="status-dot"></span> Completed
+      </div>
       <div class="learning-card-title">Machine Learning Software Foundations</div>
       <div class="learning-card-org">Data Science Institute · University of Toronto</div>
       <div class="learning-card-desc">
@@ -1069,8 +1092,8 @@
     </div>
 
     <div class="learning-card fade-in">
-      <div class="learning-status status-active">
-        <span class="status-dot"></span> In Progress
+      <div class="learning-status status-completed">
+        <span class="status-dot"></span> Completed
       </div>
       <div class="learning-card-title">Foundations of Data Science</div>
       <div class="learning-card-org">School of Continuing Studies · University of Toronto</div>
@@ -1093,8 +1116,8 @@
     </div>
 
     <div class="learning-card fade-in">
-      <div class="learning-status status-planned">
-        <span class="status-dot"></span> Planned
+      <div class="learning-status status-completed">
+        <span class="status-dot"></span> Completed
       </div>
       <div class="learning-card-title">AWS Certified Solutions Architect – Professional</div>
       <div class="learning-card-org">Amazon Web Services</div>
@@ -1104,17 +1127,7 @@
       </div>
     </div>
 
-    <div class="learning-card fade-in">
-      <div class="learning-status status-planned">
-        <span class="status-dot"></span> Planned
-      </div>
-      <div class="learning-card-title">GenAI for Enterprise Modernization</div>
-      <div class="learning-card-org">Self-directed · Applied Research</div>
-      <div class="learning-card-desc">
-        Applying Large Language Models to COBOL legacy code analysis — a niche
-        research area emerging from my work at DXC Technology.
-      </div>
-    </div>
+
 
   </div>
 </section>
@@ -1193,44 +1206,71 @@
     <span class="section-num">06</span>
   </div>
   <h2 class="fade-in">Projects</h2>
-
-  <div class="projects-placeholder fade-in">
-    <p>Projects coming soon — check back shortly</p>
-    <div class="comment">&lt;!-- Add your project cards below this section --&gt;</div>
-  </div>
-
-  <!-- UNCOMMENT AND FILL IN when you have projects to showcase:
-
+ 
   <div class="projects-grid">
-    <div class="project-card">
-      <div class="project-card-label">In Progress · AI/ML</div>
-      <div class="project-card-title">GenAI-Powered COBOL Analyser</div>
+ 
+    <div class="project-card fade-in">
+      <div class="project-card-label"> Completed · AI / RAG</div>
+      <div class="project-card-title">RAG Book Recommendation Chatbot</div>
       <div class="project-card-desc">
-        Using large language models to automatically document and map legacy COBOL programs,
-        reducing modernization discovery time from weeks to hours.
+        A fully local Retrieval-Augmented Generation chatbot that surfaces book suggestions
+        exclusively from a curated, trusted knowledge base — no hallucinated titles, no external
+        results. Recommendations are grounded in a custom data source with every step of the
+        pipeline running on-device via Ollama. No external AI APIs required.
       </div>
-      <div class="skill-tags">
+      <div class="project-pipeline">
+        <div class="pipeline-step">
+          <span class="pipeline-icon">💬</span>
+          <span class="pipeline-label">User Query</span>
+        </div>
+        <span class="pipeline-arrow">→</span>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">🔍</span>
+          <span class="pipeline-label">Classifier</span>
+        </div>
+        <span class="pipeline-arrow">→</span>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">🏷️</span>
+          <span class="pipeline-label">Tag Extractor</span>
+        </div>
+        <span class="pipeline-arrow">→</span>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">🧮</span>
+          <span class="pipeline-label">Embedder</span>
+        </div>
+        <span class="pipeline-arrow">→</span>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">📚</span>
+          <span class="pipeline-label">Weaviate Search</span>
+        </div>
+        <span class="pipeline-arrow">→</span>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">✨</span>
+          <span class="pipeline-label">Response</span>
+        </div>
+      </div>
+      <div class="skill-tags" style="margin-top:1rem;">
         <span class="skill-tag">Python</span>
-        <span class="skill-tag">OpenAI</span>
-        <span class="skill-tag">COBOL</span>
-        <span class="skill-tag">AWS Lambda</span>
+        <span class="skill-tag">RAG</span>
+        <span class="skill-tag">Ollama</span>
+        <span class="skill-tag">Llama 3.2</span>
+        <span class="skill-tag">Weaviate</span>
+        <span class="skill-tag">FastAPI</span>
+        <span class="skill-tag">nomic-embed-text</span>
+        <span class="skill-tag">Local LLM</span>
+      </div>
+      <div style="margin-top:1.2rem;">
+        <a href="https://github.com/blackpearl/RAG_book_recommendation"
+           target="_blank" rel="noopener"
+           class="btn btn-secondary" style="font-size:0.68rem; padding:0.6rem 1.2rem;">
+          ↗ View on GitHub
+        </a>
       </div>
     </div>
-
-    <div class="project-card">
-      <div class="project-card-label">Completed · Architecture</div>
-      <div class="project-card-title">Your Project Title Here</div>
-      <div class="project-card-desc">
-        Brief description of what you built, the problem it solved, and the impact it had.
-      </div>
-      <div class="skill-tags">
-        <span class="skill-tag">Tag 1</span>
-        <span class="skill-tag">Tag 2</span>
-      </div>
-    </div>
+ 
+    <!-- ADD MORE PROJECT CARDS HERE — copy the project-card block above -->
+ 
   </div>
-
-  -->
 </section>
 
 <!-- CONTACT (dark) -->
